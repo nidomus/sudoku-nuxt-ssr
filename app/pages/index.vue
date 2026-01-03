@@ -17,31 +17,30 @@
                 </div>
             </nav>
         </div> -->
-        <div class="hero-body">
+        <div class="hero-body py-0">
             <div class="container">        
             <div class="columns is-multiline is-centered is-mobile">
 
-                <div class="column is-7">
-                     <nav class="navbar has-shadow">
-                <div class="navbar-brand">
-                    <div class="navbar-item">
+                <div class="column is-7-desktop is-12-touch">
+                     <nav class="navbar has-shadow py-2">
+                        <div class="navbar-brand">
+                            <div class="navbar-item">
 
-                        <h1 class="title has-text-light ">
-                            <span>
-                                SUD<span id="logo-icon">
-                                    <img src="../assets/images/wave.jpg" alt="">
-                                </span>KU!
-                            </span>
+                        <!-- <span id="logo-icon">
+                            <img src="../assets/images/wave.jpg" alt="">
+                        </span> -->
+                        <h1 class="title is-size-5-touch mb-0">
+                            SUDOKU!
                         </h1>
 
+                        </div>
                     </div>
+                </nav>
                 </div>
-            </nav>
-                </div>
-                <div class="column is-7-desktop is-8-touch mb-5">
+                <div class="column is-7-desktop is-12-touch">
                     <div id="sudoku" v-if="!loading">
                         <div v-for="cell, index in sudoku"
-                            class="cell is-clickable is-size-4-desktop is-6-mobile has-text-centered"
+                            class="cell is-clickable is-size-5-desktop is-size-6-mobile has-text-centered"
                             :data-number="cell.number" :data-column="cell.column" :data-row="cell.row"
                             @click="selectedCell = cell"
                             :class="{ 'editable': cell.editable, 'selected': selectedCell === cell, 'marcada': ehMarcada(cell), 'wrong': cell.conflicts > 0 }">
@@ -62,6 +61,20 @@
 
                 </div>
 
+                <div class="column is-7">
+                    <div class="cronometro">
+                        <button class="button is-small">
+                            <span class="icon">
+                                <Icon name="mdi:pause" size="1.5rem" class="icon" />
+                            </span>
+                        </button>                    
+                        <p class="is-size-5 has-text-light">
+                            <span>
+                                {{ cronometro }}
+                            </span>
+                        </p>                
+                    </div>                  
+                </div>
                 <div class="column is-7-desktop  is-12-touch">
 
                     <div class="columns m-0 is-multiline is-centered is-mobile is-vcentered " id="actions">
@@ -212,6 +225,25 @@ useHead({
     ],
 })
 
+
+const cronometro = ref("00:00")
+
+function atualizarCronometro() {
+    const now = new Date(cronometro.value.split(':').map(Number).reduce((acc, time) => acc * 60 + time, 0) * 1000 + 1000);
+
+    const hours = now.getUTCHours();
+    const minutes = now.getUTCMinutes();
+    const seconds = now.getUTCSeconds();
+
+    // Format the string with leading zeroes
+    if (hours == "0") {
+        cronometro.value = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        return
+    }
+    cronometro.value = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+
 onMounted(async () => {
     loading.value = true
     if (localStorage.getItem('sudoku') === null) {
@@ -249,8 +281,12 @@ onMounted(async () => {
         }
     });
 
+    setInterval(atualizarCronometro, 1000);
 
 })
+
+
+
 
 
 function ehMarcada(cell) {
@@ -368,9 +404,10 @@ function check() {
 <style lang="scss" scoped>
 
 .container {
-
+    height: 100%;
     max-width: 55dvw;
 }
+
 
 
 
@@ -383,7 +420,7 @@ function check() {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    border: 3px solid #261D14;
+    border: 3px solid #261d14b7;
 
 }
 
@@ -392,13 +429,11 @@ function check() {
     margin: -10px
 }
 
-.button {
-    border-radius: 5px;
-}
 
 .cell {
     position: relative;
     border: 1px solid #644F37;
+    background-color: #fff5e7;
     color: #261D14;
     width: calc(100% / 9);
     aspect-ratio: 1;
@@ -461,19 +496,20 @@ function check() {
 
 .cell::before {
     content: attr(data-number);
+
 }
 
 .cell:hover {
-    background-color: rgba(173, 173, 173, 0.288);
+    background-color: #ffe6c2de !important;
 }
 
 .cell.selected {
-    background-color: #F7D5A7;
+    background-color: #ffe6c2de;
     //color: black;
 }
 
 .cell.marcada:not(.selected) {
-    background-color: rgba(247, 214, 167, 0.253) //color: black;
+    background-color: #ffedd5 //color: black;
 }
 
 .cell.wrong:not(.editable) {
@@ -518,6 +554,10 @@ function check() {
     background-color: #261D14 !important;
 }
 
+.title{
+    font-family: 'Press Start 2P', sans-serif;
+}
+
 
 
 .navbar #logo-icon {
@@ -528,16 +568,15 @@ function check() {
 
     & img {
         border: 1px solid #E3D2BB;
-        height: 1.5rem;
-
+        height: 15rem;
         border-radius: 50%;
     }
 }
 
 .navbar h1 {
     color: #E3D2BB !important;
-
 }
+
 
 
 .footer {
@@ -566,11 +605,49 @@ function check() {
 
 }
 
+.column:has(.cronometro) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+.cronometro {
+    background-color: #261d14b7;
+
+    padding: 15px;
+    border-radius: 10px;
+    width: fit-content  ;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.cronometro p {
+    font-family: 'Press Start 2P', sans-serif;
+}
+
+
+.button {
+    border-radius: 5px;
+    font-family: 'Press Start 2P', sans-serif;
+
+
+}
+
 #actions .button:not(#generate .button, #annotation-button, #erase-button, #reset-button) {
-    background-color: #261d14ef;
-    border: #261d14 2px solid;
+    background-color: #261d14b7;
+    border: #8b755e 2px solid;
     color: #E3D2BB;
     box-shadow: #261d14b7 2px 2px 3px;
+}
+
+
+#actions .button:not(#generate .button, #annotation-button, #erase-button, #reset-button):hover {
+    background-color: #363628;
 }
 
 
@@ -618,13 +695,17 @@ function check() {
 }
 
 .hero,
-.hero-body {
+.hero-body {    
 
-    background-color: #fffdfb;
+ background-color: #4c4d38 !important;
 }
 
 
 @media screen and (max-width: 768px) {
+
+    .container {
+        max-width: 100%;
+    }
     #actions .button:not(#generate .button) {
         aspect-ratio: 1;
         font-size: 1rem;
