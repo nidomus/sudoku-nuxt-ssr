@@ -7,5 +7,11 @@ export default defineNuxtConfig({
     'bulma'
   ],
 
+  vite:{
+    server: {
+      allowedHosts: ['nuxt.herbertdev.com.br']
+    }
+  },
+
   modules: ['@nuxt/icon', '@nuxt/fonts']
 })

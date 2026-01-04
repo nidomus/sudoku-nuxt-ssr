@@ -18,67 +18,75 @@
             </nav>
         </div> -->
         <div class="hero-body py-0">
-            <div class="container">        
-            <div class="columns is-multiline is-centered is-mobile">
+            <div class="container">
+                <div class="columns is-multiline is-centered is-mobile">
 
-                <div class="column is-7-desktop is-12-touch">
-                     <nav class="navbar has-shadow py-2">
-                        <div class="navbar-brand">
-                            <div class="navbar-item">
+                    <div class="column is-7-desktop is-12-touch">
+                        <nav class="navbar has-shadow">
+                            <div class="navbar-brand">
+                                <div class="navbar-item">
 
-                        <!-- <span id="logo-icon">
+                                    <!-- <span id="logo-icon">
                             <img src="../assets/images/wave.jpg" alt="">
                         </span> -->
-                        <h1 class="title is-size-5-touch mb-0">
-                            SUDOKU!
-                        </h1>
+                                    <h1 class="title is-size-5-desktop is-size-6-touch mb-0">
+                                        SUDOKU!
+                                    </h1>
 
-                        </div>
-                    </div>
-                </nav>
-                </div>
-                <div class="column is-7-desktop is-12-touch">
-                    <div id="sudoku" v-if="!loading">
-                        <div v-for="cell, index in sudoku"
-                            class="cell is-clickable is-size-5-desktop is-size-6-mobile has-text-centered"
-                            :data-number="cell.number" :data-column="cell.column" :data-row="cell.row"
-                            @click="selectedCell = cell"
-                            :class="{ 'editable': cell.editable, 'selected': selectedCell === cell, 'marcada': ehMarcada(cell), 'wrong': cell.conflicts > 0 }">
-
-
-                            <div id="annotations" v-show="cell.number === ''">
-                                <div class="annotation" v-for="n in 9" :class="{ 'visible': cell.annotations[n - 1] }">
-                                    {{ n }}
                                 </div>
                             </div>
+                        </nav>
+                    </div>
+                    <div class="column is-7-desktop is-12-touch">
+                        <div id="sudoku" v-if="!loading">
+                            <div v-for="cell, index in sudoku"
+                                class="cell is-clickable is-size-5-desktop is-size-6-mobile has-text-centered"
+                                :data-number="cell.number" :data-column="cell.column" :data-row="cell.row"
+                                @click="selectedCell = cell"
+                                :class="{ 'editable': cell.editable, 'selected': selectedCell === cell, 'marcada': ehMarcada(cell), 'wrong': cell.conflicts > 0 }">
 
+
+                                <div id="annotations" v-show="cell.number === ''">
+                                    <div class="annotation" v-for="n in 9"
+                                        :class="{ 'visible': cell.annotations[n - 1] }">
+                                        {{ n }}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="" v-else>
+                            <div class="button is-static is-loading is-large is-fullwidth" id="loader">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="column is-7 py-0" id="info">
+                        <div class="cronometro">
+                            <button class="button is-small">
+                                <span class="icon">
+                                    <Icon name="mdi:pause" size="1.5rem" class="icon" />
+                                </span>
+                            </button>
+                            <p class="is-size-5 has-text-light">
+                                <span>
+                                    {{ cronometro }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="erros">
+                            <p class="is-size-5 has-text-light">
+                                <span>
+                                    {{ errors }} / 3
+                                </span>
+                            </p>
                         </div>
                     </div>
-                    <div class="" v-else>
-                        <div class="button is-static is-loading is-large is-fullwidth" id="loader">
-                        </div>
-                    </div>
+                    <div class="column is-7-desktop  is-12-touch">
 
-                </div>
-
-                <div class="column is-7">
-                    <div class="cronometro">
-                        <button class="button is-small">
-                            <span class="icon">
-                                <Icon name="mdi:pause" size="1.5rem" class="icon" />
-                            </span>
-                        </button>                    
-                        <p class="is-size-5 has-text-light">
-                            <span>
-                                {{ cronometro }}
-                            </span>
-                        </p>                
-                    </div>                  
-                </div>
-                <div class="column is-7-desktop  is-12-touch">
-
-                    <div class="columns m-0 is-multiline is-centered is-mobile is-vcentered " id="actions">
-                        <!-- <div class="column is-12 is-hidden-touch pb-0">
+                        <div class="columns m-0 is-multiline is-centered is-mobile is-vcentered " id="actions">
+                            <!-- <div class="column is-12 is-hidden-touch pb-0">
 
                             <div class="field has-addons" id="generate">
                                 <div class="control is-expanded">
@@ -99,7 +107,7 @@
                             <hr class="mb-0">
                         </div> -->
 
-                        <!-- <div class="column is-12 py-5">
+                            <!-- <div class="column is-12 py-5">
                             <p class="is-size-5-desktop is-size-5-touch icon-text" :class="{ 'visible': !loading }"
                                 id="difficulty-text">
                                 <span class="icon">
@@ -115,41 +123,41 @@
 
                         </div> -->
 
-                        <div v-for="i in 9" class="column is-2-desktop px-1 is-2-touch">
-                            <button class="button is-medium is-responsive  is-fullwidth"
-                                @click="annotationMode ? addAnnotation($event, i - 1) : addValue($event, i)">
-                                {{ i }}
-                            </button>
-                        </div>
-                        <div class="column is-4-desktop is-2-touch  px-1">
-                            <button class="button is-medium is-responsive 
-                             is-fullwidth" @click="addValue($event, '')" id="erase-button">
-                                <span class="is-hidden-desktop ">
-                                    <Icon name="mdi:eraser" class="icon" />
-                                </span>
-                                <Icon name="mdi:eraser" size="1rem" class="icon is-hidden-touch is-size-5 " />
-                                <span class="is-hidden-touch">
+                            <div v-for="i in 9" class="column is-2-desktop px-1 is-2-touch">
+                                <button class="button is-medium is-responsive  is-fullwidth"
+                                    @click="annotationMode ? addAnnotation($event, i - 1) : addValue($event, i)">
+                                    {{ i }}
+                                </button>
+                            </div>
+                            <div class="column is-4-desktop is-2-touch  px-1">
+                                <button class="button is-medium is-responsive 
+                            is-fullwidth" @click="addValue($event, '')" id="erase-button">
+                                    <span class="is-hidden-desktop ">
+                                        <Icon name="mdi:eraser" class="icon" />
+                                    </span>
+                                    <Icon name="mdi:eraser" size="1rem" class="icon is-hidden-touch is-size-5 " />
+                                    <span class="is-hidden-touch">
 
-                                </span>
-                            </button>
-                        </div>
-                        <div class="column is-2-desktop is-2-touch px-1">
-                            <button class="button is-medium is-responsive is-light is-fullwidth"
-                                :class="{ 'is-active': annotationMode }" @click="annotationMode = !annotationMode"
-                                id="annotation-button">
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="column is-2-desktop is-2-touch px-1">
+                                <button class="button is-medium is-responsive is-light is-fullwidth"
+                                    :class="{ 'is-active': annotationMode }" @click="annotationMode = !annotationMode"
+                                    id="annotation-button">
 
-                                <span class="is-hidden-desktop">
-                                    <Icon name="mdi:pencil-outline" class="icon" />
-                                </span>
-                                <Icon name="mdi:pencil-outline" class="icon is-hidden-touch is-size-5" />
-                                <span class="is-hidden-touch">
+                                    <span class="is-hidden-desktop">
+                                        <Icon name="mdi:pencil-outline" class="icon" />
+                                    </span>
+                                    <Icon name="mdi:pencil-outline" class="icon is-hidden-touch is-size-5" />
+                                    <span class="is-hidden-touch">
 
-                                </span>
+                                    </span>
 
-                            </button>
-                        </div>
+                                </button>
+                            </div>
 
-                        <!-- <div class="column is-4-desktop is-2-touch  px-1">
+                            <!-- <div class="column is-4-desktop is-2-touch  px-1">
                             <button class="button is-medium is-responsive is-fullwidth" @click="reset()"
                                 id="reset-button">
 
@@ -163,7 +171,7 @@
 
                             </button>
                         </div> -->
-                        <!-- <div class="column is-12 is-hidden-desktop px-0">
+                            <!-- <div class="column is-12 is-hidden-desktop px-0">
                             <hr>
                             <div class="field has-addons" id="generate">
                                 <div class="control is-expanded">
@@ -183,13 +191,13 @@
                             </div>
 
                         </div> -->
+                        </div>
+
+
+
                     </div>
-
-
-
                 </div>
             </div>
-            </div>    
 
         </div>
 
@@ -212,6 +220,7 @@
 const sudoku = ref([])
 const sudokuBkp = ref([])
 const selectedCell = ref({})
+const wrongCells = ref(0)
 const errors = ref(0)
 const loading = ref(true)
 const difficultySelect = ref('easy')
@@ -367,6 +376,8 @@ function addAnnotation(event, index) {
 
 function check() {
 
+    var errorFlag = false
+
     sudoku.value.filter(cell => cell !== selectedCell.value).forEach(cell => {
 
         if ((cell.row === selectedCell.value.row
@@ -381,13 +392,15 @@ function check() {
                 && selectedCell.value.number !== '') {
                 cell.conflicts++
                 selectedCell.value.conflicts++
-                errors.value++
+                wrongCells.value++
+
+                errorFlag = true
 
             }
             else if (selectedCell.value.oldNumber == cell.number) {
                 cell.conflicts--
                 selectedCell.value.conflicts--
-                errors.value--
+                wrongCells.value--
 
             }
 
@@ -395,6 +408,9 @@ function check() {
         }
     })
 
+    if (errorFlag) {
+        errors.value++
+    }
     localStorage.setItem('sudoku', JSON.stringify(sudoku.value))
 
 }
@@ -402,19 +418,22 @@ function check() {
 </script>
 
 <style lang="scss" scoped>
-
 .container {
     height: 100%;
     max-width: 55dvw;
 }
 
 
+.column:has(#sudoku) {
+    height: 63dvh;
+}
+
 
 
 #sudoku {
     font-family: 'Press Start 2P', sans-serif;
+    font-weight: bold;
     position: relative;
-    max-height: 100%;
     height: 100%;
     max-width: 100%;
     display: flex;
@@ -436,6 +455,7 @@ function check() {
     background-color: #fff5e7;
     color: #261D14;
     width: calc(100% / 9);
+    height: calc(100% / 9);
     aspect-ratio: 1;
     display: flex;
     justify-content: center;
@@ -546,7 +566,7 @@ function check() {
     color: #261D14;
     font-weight: bold;
     position: absolute;
-    font-size: 20px;
+    font-size: 0.75rem;
     top: 62%;
 }
 
@@ -554,10 +574,9 @@ function check() {
     background-color: #261D14 !important;
 }
 
-.title{
+.title {
     font-family: 'Press Start 2P', sans-serif;
 }
-
 
 
 .navbar #logo-icon {
@@ -605,6 +624,8 @@ function check() {
 
 }
 
+
+
 .column:has(.cronometro) {
     display: flex;
     justify-content: center;
@@ -612,13 +633,18 @@ function check() {
 
 }
 
+#info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 .cronometro {
     background-color: #261d14b7;
 
     padding: 15px;
-    border-radius: 10px;
-    width: fit-content  ;
+    border-radius: 4px;
+    width: fit-content;
 
     display: flex;
     justify-content: center;
@@ -630,6 +656,22 @@ function check() {
     font-family: 'Press Start 2P', sans-serif;
 }
 
+.erros {
+    background-color: #261d14b7;
+
+    padding: 15px;
+    border-radius: 4px;
+    width: fit-content;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.erros p {
+    font-family: 'Press Start 2P', sans-serif;
+}
 
 .button {
     border-radius: 5px;
@@ -695,9 +737,9 @@ function check() {
 }
 
 .hero,
-.hero-body {    
+.hero-body {
 
- background-color: #4c4d38 !important;
+    background-color: #4c4d38 !important;
 }
 
 
@@ -706,6 +748,7 @@ function check() {
     .container {
         max-width: 100%;
     }
+
     #actions .button:not(#generate .button) {
         aspect-ratio: 1;
         font-size: 1rem;
